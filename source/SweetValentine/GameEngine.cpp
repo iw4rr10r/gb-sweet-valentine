@@ -12,6 +12,7 @@ const uint8_t GameEngine::WALL_Y_OFFSET = 20;
 const uint8_t GameEngine::BRICK_PADDING =  1;
 
 uint8_t GameEngine::destroyedBricks = 0;
+bool GameEngine::ballReady = false;
 
 HeartBrick* GameEngine::wall[WALL_WIDTH][WALL_HEIGHT];
 Paddle* GameEngine::paddle = NULL;
@@ -67,6 +68,8 @@ void GameEngine::initBall() {
     );
 
     Renderer::addListener(ball);
+
+    ballReady = true;
 }
 
 void GameEngine::tick() {
@@ -114,7 +117,7 @@ void GameEngine::checkCollisionWithPaddle() {
     int16_t by = ball->getY();
     int16_t dx = bx - px;
 
-    if (abs(dx) < .5*PADDLE_WIDTH && by <= py) {
+    if (abs(dx) < (.5*PADDLE_WIDTH - 2) && by <= py) {
         int16_t bvx = ball->getVx();
         int16_t bvy = ball->getVy();
         ball->setY(py);
@@ -182,8 +185,10 @@ void GameEngine::paddleReady() {
 }
 
 void GameEngine::start() {
-    mode = MODE_STARTED;
-    ball->start();
+    if (ballReady) {
+        mode = MODE_STARTED;
+        ball->start();
+    }
 }
 
 void GameEngine::stop() {
@@ -195,6 +200,7 @@ void GameEngine::stop() {
     paddle = NULL;
     ball = NULL;
     destroyedBricks = 0;
+    ballReady = false;
     mode = MODE_STANDBY;
     Application::stopGame();
 }

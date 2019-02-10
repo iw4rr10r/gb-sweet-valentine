@@ -19,6 +19,7 @@ class GameEngine
         static Paddle* paddle;
         static Ball* ball;
         static uint8_t destroyedBricks;
+        static bool ballReady;
 
         static void initWall();
         static void initPaddle();
